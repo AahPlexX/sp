@@ -10,7 +10,10 @@
   },
   "scripts": {
     "dev": "vite",
+    "check": "node scripts/verify-course-content.mjs",
+    "test": "node --test",
     "build": "vite build",
+    "verify": "pnpm run check && pnpm test && pnpm run build",
     "preview": "vite preview"
   },
   "dependencies": {
