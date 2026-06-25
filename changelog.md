@@ -130,3 +130,47 @@ This file is the implementation record for `AahPlexX/sp`.
 - **Change:** Rewrote the record format so all entries run oldest-to-newest and added full path, change, reason, and limitation fields for this batch.
 - **Reason:** The repository protocol requires chronological entries and complete per-file audit details.
 - **Known limitation:** Earlier same-day history is reconstructed from the repository state and prior implementation records; exact prior commit timestamps are not reproduced here.
+
+## 2026-06-25 — Course-content verification gate
+
+### Created: `src/lib/courseValidation.js`
+
+- **Change:** Added a framework-free validator for the course catalog. It verifies catalog shape, non-empty required course fields, unique course identifiers, supported subject areas, non-empty lesson collections, and complete lesson title/body/note content. It also exports an assertion helper for command-line verification.
+- **Reason:** Course data drives every visible learning surface. Invalid catalog data should fail before it reaches a deployed study interface.
+- **Known limitation:** The validator checks structural integrity, not factual accuracy, pedagogy quality, certification standards, or external source citations.
+
+### Created: `scripts/verify-course-content.mjs`
+
+- **Change:** Added a command-line verifier that imports the production catalog, runs the shared assertion, prints the verified course and lesson totals, and exits with failure status when validation fails.
+- **Reason:** The catalog needs a deterministic build-time gate that checks the actual content source rather than a duplicate fixture.
+- **Known limitation:** The command validates the static course data currently committed; it does not validate future remote content sources because none exist yet.
+
+### Created: `test/courseValidation.test.mjs`
+
+- **Change:** Added Node built-in test coverage for the production catalog, missing required data, duplicate identifiers, unsupported areas, incomplete lessons, and aggregated assertion failures.
+- **Reason:** The validation rule set needs executable checks that fail when a rule is accidentally removed or weakened.
+- **Known limitation:** Browser interaction, visual layout, and accessibility behavior are not covered by this unit test.
+
+### Edited: `package.json`
+
+- **Change:** Added `check`, `test`, and `verify` scripts. `verify` runs catalog validation, the Node test suite, and the Vite production build in that order.
+- **Reason:** Local development and CI need one repeatable pre-deployment command instead of separate, manually remembered checks.
+- **Known limitation:** Dependency installation remains non-frozen until a pnpm 11-generated lockfile is available.
+
+### Edited: `.github/workflows/deploy.yml`
+
+- **Change:** Replaced the standalone build step with `pnpm run verify`, making GitHub Pages deployment depend on content validation, tests, and a successful production build.
+- **Reason:** A deployment should not publish when the course catalog is malformed, validation behavior has regressed, or the build fails.
+- **Known limitation:** The workflow still uses `pnpm install --no-frozen-lockfile` and has no pnpm cache until `pnpm-lock.yaml` is generated from a real resolution.
+
+### Edited: `README.md`
+
+- **Change:** Documented `pnpm run verify` as the local verification and production-build command and updated the deployment description to reflect the verification gate.
+- **Reason:** The operating guide must match the actual build and deployment process.
+- **Known limitation:** The command has not been executed in the available environment because pnpm 11 and registry access were unavailable there.
+
+### Edited: `changelog.md`
+
+- **Change:** Added the complete chronological record for the course-content verification gate and all files created or edited in this batch.
+- **Reason:** The repository contribution protocol requires synchronized audit details for every change.
+- **Known limitation:** The history records file-level verification and code review; a completed GitHub Actions run is still needed to confirm the full install/test/build/deploy path.
