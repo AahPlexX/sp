@@ -7,7 +7,7 @@ SP Institute is a responsive, read-only professional learning site for business 
 - **React** renders the user interface.
 - **Vite** builds static production assets.
 - **pnpm** manages JavaScript dependencies.
-- **GitHub Actions** builds and deploys the static site to GitHub Pages.
+- **GitHub Actions** verifies, builds, and deploys the static site to GitHub Pages.
 - **Hash routes** keep navigation compatible with static hosting.
 - **Local browser storage** remembers completed lessons on the current browser only.
 
@@ -30,18 +30,18 @@ pnpm dev
 
 Vite prints the local development address after the server starts.
 
-## Production build
+## Verification and production build
 
 ```bash
-pnpm run build
+pnpm run verify
 pnpm run preview
 ```
 
-`pnpm run build` writes the deployable static site to `dist/`. `pnpm run preview` serves that build locally for review.
+`pnpm run verify` validates the course catalog, runs the Node test suite, and writes the deployable static site to `dist/`. `pnpm run preview` serves that build locally for review.
 
 ## GitHub Pages deployment
 
-The deployment workflow is stored in `.github/workflows/deploy.yml`. In the repository’s GitHub Pages settings, choose **GitHub Actions** as the publishing source. A push to `main` then installs dependencies, builds the Vite project, uploads `dist/`, and deploys the artifact.
+The deployment workflow is stored in `.github/workflows/deploy.yml`. In the repository’s GitHub Pages settings, choose **GitHub Actions** as the publishing source. A push to `main` installs dependencies, runs `pnpm run verify`, uploads `dist/`, and deploys the artifact only after verification succeeds.
 
 ## Course content
 
