@@ -10,12 +10,12 @@ const documentTitles = {
 export function readRoute(hash = window.location.hash) {
   const parts = hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   const page = validPages.has(parts[0]) ? parts[0] : "home";
-  const lesson = Number.parseInt(parts[2], 10);
+  const lesson = Number(parts[2]);
 
   return {
     page,
     courseId: parts[1] ?? "",
-    lesson: Number.isInteger(lesson) ? lesson : 0
+    lesson: Number.isSafeInteger(lesson) && lesson >= 0 ? lesson : 0
   };
 }
 
