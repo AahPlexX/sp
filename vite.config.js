@@ -1,8 +1,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+const pagesBasePath = "/sp/";
+
+export { pagesBasePath };
+
 export default defineConfig({
-  base: "/sp/",
+  base: pagesBasePath,
   plugins: [react()],
   build: {
     outDir: "dist",
